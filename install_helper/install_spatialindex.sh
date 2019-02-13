@@ -6,14 +6,15 @@ echo Install libspatialindex
 apt-get update
 apt-get -y install autoconf automake libtool git build-essential
 
+cd build
+
 git clone https://github.com/libspatialindex/libspatialindex.git
 
-cd libspatialindex
-./autogen.sh
-./configure; make; make install; ldconfig
+#cd libspatialindex
+#./autogen.sh
+#./configure; make; make install; ldconfig
 
-cd ..
-rm -rf libspatialindex
+
 
 echo Installation completed
 
