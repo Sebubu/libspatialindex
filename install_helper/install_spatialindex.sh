@@ -10,9 +10,9 @@ cd build
 
 git clone https://github.com/libspatialindex/libspatialindex.git
 
-#cd libspatialindex
-#./autogen.sh
-#./configure; make; make install; ldconfig
+cd libspatialindex
+./autogen.sh
+./configure; make; make install; ldconfig
 
 
 
