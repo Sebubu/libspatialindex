@@ -10,8 +10,7 @@ This tutorial as basically aligned with [python packaging tutorial](https://pack
 - [PyPi](https://pypi.org/user/apgsga/)
 
 ### Projects
-- [hueyx on test PyPi](https://test.pypi.org/project/hueyx/)
-- [hueyx on PyPi](https://pypi.org/project/hueyx/)
+- [libspatialindex on PyPi](https://pypi.org/project/libspatialindex/)
 
 
 ### Update version
@@ -23,15 +22,6 @@ Be sure you have installed the `requirements.txt` and your pip is up to date.
 ```bash
 # Build library
 python3 setup.py sdist bdist_wheel
-```
-- Upload the new packages to test PyPi
-```bash
-twine upload --repository-url https://test.pypi.org/legacy/ dist/*
-```
-
-- Test it with a project.
-```bash
-pip install -i https://test.pypi.org/simple/ hueyx
 ```
 
 - If everything is ok, upload the packge to PyPi.
