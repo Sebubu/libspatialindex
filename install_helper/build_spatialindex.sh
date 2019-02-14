@@ -19,6 +19,7 @@ if [ ! -f ./libspatialindex/compile ]; then
     ./autogen.sh
     ./configure; make;
     rm -rf .git/
+    rm -f .gitignore
     cd ..
     echo - Build completed
 fi
