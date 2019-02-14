@@ -4,7 +4,8 @@
 
 echo Install libspatialindex
 
-cd libspatialindex
+cd ../libspatialindex
 make install; ldconfig
 echo Installation completed
 
+touch ~/severin.txt

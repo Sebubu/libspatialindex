@@ -1,2 +1,3 @@
 wheel==0.33.0
 twine
+setuptools

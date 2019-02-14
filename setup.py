@@ -1,3 +1,4 @@
+import os
 import subprocess
 from distutils.command.build_ext import build_ext
 from distutils.command.build import build
@@ -12,33 +13,13 @@ def log(msg):
     logging.info(msg)
 
 
-class CustomInstall(install):
-    def _install_spatialindex(self):
-        command = ['./install_helper/install_spatialindex.sh']
-        p = subprocess.Popen(
-            command,
-            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        # Can use communicate(input='y\n'.encode()) if the command run requires
-        # some confirmation.
-        stdout_data, _ = p.communicate()
-
-        log(stdout_data.decode('utf-8'))
-        if p.returncode != 0:
-            raise RuntimeError(
-                'Command %s failed: exit code: %s' % (command, p.returncode))
-
-    def run(self):
-        self._install_spatialindex()
-        install.run(self)
-
-
 class Build(build):
-    sub_commands = [('build_ext', None)] + build.sub_commands
+    sub_commands = build.sub_commands + [('build_ext', None)]
 
 
 
 CUSTOM_COMMANDS = [
-    ['./install_helper/build_spatialindex.sh'],
+    ['./libspatialindex_sbu/install_helper/build_spatialindex.sh'],
 ]
 
 
@@ -50,11 +31,15 @@ class CommandRunner:
         p = subprocess.Popen(
             command_list,
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        # Can use communicate(input='y\n'.encode()) if the command run requires
-        # some confirmation.
-        stdout_data, _ = p.communicate()
 
-        log(stdout_data.decode('utf-8'))
+        while True:
+            output = p.stdout.readline()
+            output = output.decode('utf-8')
+            if output == '' and p.poll() is not None:
+                break
+            if output:
+                print(output.strip())
+
         if p.returncode != 0:
             raise RuntimeError(
                 'Command %s failed: exit code: %s' % (command_list, p.returncode))
@@ -77,9 +62,16 @@ class CustomBuildExtCommand(build_ext):
         build_ext.run(self)
 
 
+def package_files(directory):
+    paths = []
+    for (path, directories, filenames) in os.walk(directory):
+        for filename in filenames:
+            paths.append(os.path.join(path, filename))
+    return paths
 
 packages = setuptools.find_packages()
-packages.append('install_helper')
+
+extra_data = package_files('libspatialindex_sbu/libspatialindex')
 
 setuptools.setup(
     name='libspatialindex',
@@ -90,18 +82,20 @@ setuptools.setup(
     packages=packages,
     install_requires=[],
     package_data={
-        'install_helper': [
+        'libspatialindex_sbu.install_helper': [
             '*.sh'
         ],
-        'libspatialindex': [
-            '*'
-        ]
+        '': extra_data
     },
     cmdclass={
         # Command class instantiated and run during pip install scenarios.
         'build_ext': CustomBuildExtCommand,
         'build': Build,
         'bdist_ext': CustomBuildExtCommand,
-        'install': CustomInstall
+    },
+    entry_points={
+        'console_scripts': [
+            'libspatialindex_install = libspatialindex_sbu.install_helper:install'
+        ]
     }
 )

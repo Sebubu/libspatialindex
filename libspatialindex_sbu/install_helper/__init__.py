@@ -1,0 +1,1 @@
+from .install_index import install_index as install
