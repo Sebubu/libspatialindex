@@ -3,7 +3,7 @@
 # Install this library to import the rtree index which is used in polygon_list.py
 
 echo - Build spatialindex
-cd ../builded
+cd ../builded_lib
 
 if [ -f ./libspatialindex/compile ]; then
     echo - Already built before
@@ -18,6 +18,7 @@ if [ ! -f ./libspatialindex/compile ]; then
     cd libspatialindex
     ./autogen.sh
     ./configure; make;
+    rm -rf .git/
     cd ..
     echo - Build completed
 fi
